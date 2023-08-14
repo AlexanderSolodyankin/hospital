@@ -1,0 +1,48 @@
+insert into public.users(login, email, password, active) values
+    ('user_1','user_1@email.dev','$2y$10$mL.sfkxKpiFviZQfqqSkbuN5pAlPi.YHrG.lXOLsULjyenHwhfOm6','ACTIVE'),
+    ('user_2','user_2@email.dev','$2y$10$TJ5ukcxAkkqwN6WSEBj5sOf5QZEq4Zdxg3ljw4xveaNO9BpkILbDu','ACTIVE'),
+    ('user_3','user_3@email.dev','$2y$10$9dAJzxr0bGN7Y4E1lONWfO4df4SQQDuk0p6vmsDelYljpRNH1GaNa','ACTIVE'),
+    ('user_4','user_4@email.dev','$2y$10$CRpTwj3asdlbowD2k2IvAeJAGGtjUuwaLfapoG6YhdjWAduAmkBM.','ACTIVE'),
+    ('user_5','user_5@email.dev','$2y$10$RXqpMqt2u5HyeexiWaEBEOaO356CCspb5fdYQF9Mp2y9jGQo.anMO','ACTIVE'),
+    ('user_6','user_6@email.dev','$2y$10$icFB6iPVlQWJ/w3OXZxTrOwi5rOSahYpTsE.JgxoznvxOkCsOw32K','ACTIVE'),
+    ('user_7','user_7@email.dev','$2y$10$vDJsKFwz7iFRnG4IH8Ngkut6h6enmidZWmcN8YZKIcdTq1cFqalOS','ACTIVE'),
+    ('user_8','user_8@email.dev','$2y$10$ucXMa5cMuMBcdnZN6K4o.e8dlaXclbLGnDg9qq8N4wTBRCEkh4pFG','ACTIVE'),
+    ('user_9','user_9@email.dev','$2y$10$iTb74napkBKJyLvjq.FtZ.UD0G9Mzr4nN/LZc/52cVxZC0OZyD7Zy','ACTIVE'),
+    ('user_10','user_10@email.dev','$2y$10$CFlINnRP27v79EU8kZdci.Cunm7GgshpvL3.gEX7yVXqR.qOUfvbS','ACTIVE'),
+    ('user_11','user_11@email.dev','$2y$10$rp1bRAzzdEH9wiFJdb9ioOVk.5KnoL/7alJf8h46vIMyG5Z//lQSm','ACTIVE'),
+    ('user_12','user_12@email.dev','$2y$10$3cofy/phkyMK2rRRbbTEQugPX8w05Oi6x7OnGQXj3ylkO7VOEhPiu','NO_ACTIVE'),
+    ('user_13','user_13@email.dev','$2y$10$BsxKdl8foOrlIfFkPWS9NeAENI/DdFGh8RkzjD4w8yYSwMW7GGWWu','DELETED'),
+    ('user_14','user_14@email.dev','$2y$10$KBCmkp9zwLvQLFDjW65q2OxLSqbIHhHUlCB5Dujk8lrKS6Ibam6Dm','ACTIVE'),
+    ('user_15','user_15@email.dev','$2y$10$puAwQyMOf3rJCU7uEI1A1OFALRErVQkP9pLwmxFU6QkTf.nsU8rj6','NO_ACTIVE'),
+    ('user_16','user_16@email.dev','$2y$10$.gFF7fa6VR3IBUMRcJabHOEwGWwC05vZkwKBrYj/7JXAS2PiHWKJm','DELETED');
+
+insert into public.roles(role_title) values
+    ('ADMIN'),
+    ('USER'),
+    ('DOCTOR'),
+    ('PATIENT'),
+    ('HEAD_DOCTOR'),
+    ('REGISTRY'),
+    ('MANAGER_LAB'),
+    ('MANAGER_DEPARTMENT'),
+    ('INTERN'),
+    ('LAB_ASSISTANT'),
+    ('NURSE');
+
+insert into public.m2m_user_role(user_id, role_id) values
+    (1,1),
+    (2,2),
+    (3,3),
+    (4,4),
+    (5,5),
+    (6,6),
+    (7,7),
+    (8,8),
+    (9,9),
+    (10,10),
+    (11,11),
+    (12,2),
+    (13,2),
+    (14,2),
+    (15,2),
+    (16,2);
