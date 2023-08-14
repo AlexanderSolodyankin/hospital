@@ -3,7 +3,6 @@ package com.example.hospital.service;
 import com.example.hospital.entity.RoleEntity;
 import com.example.hospital.entity.Status;
 import com.example.hospital.entity.UserEntity;
-import com.example.hospital.exceptions.users_related_exception.UserAuthenticationException;
 
 import java.util.List;
 

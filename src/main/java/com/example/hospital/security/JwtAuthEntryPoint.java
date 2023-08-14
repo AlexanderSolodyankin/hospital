@@ -16,7 +16,7 @@ public class JwtAuthEntryPoint  implements AuthenticationEntryPoint {
             HttpServletRequest request,
             HttpServletResponse response,
             AuthenticationException authException
-    ) throws IOException, ServletException {
+    ) throws IOException {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Время действия токена истекло");
     }
 }

@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
-    private UserService userService;
-    private RoleService roleService;
+    private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
     public UserMapper(UserService userService, RoleService roleService) {
@@ -26,7 +26,7 @@ public class UserMapper {
     }
 
     public UserEntity mapModelToEntity(UserRequestDto requestDto){
-        UserEntity entity = null;
+        UserEntity entity;
         entity = mapModelToEntityFromDataBase(requestDto);
         if(Objects.isNull(entity)){
             entity = new UserEntity();
