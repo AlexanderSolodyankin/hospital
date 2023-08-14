@@ -1,8 +1,7 @@
 package com.example.hospital.configuration;
 
 import com.example.hospital.security.JwtAuthEntryPoint;
-import com.example.hospital.security.JwtAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.hospital.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -20,24 +19,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
 
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthFilter jwtAuthFilter;
 
-    @Autowired
     public SecurityConfiguration(
             JwtAuthEntryPoint jwtAuthEntryPoint,
-            JwtAuthenticationFilter jwtAuthenticationFilter
+            JwtAuthFilter jwtAuthFilter
     ) {
         this.jwtAuthEntryPoint = jwtAuthEntryPoint;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.jwtAuthFilter = jwtAuthFilter;
     }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.cors();
 
-        http .exceptionHandling().authenticationEntryPoint(this.jwtAuthEntryPoint);
-        http .addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+                .exceptionHandling()
+                        .authenticationEntryPoint(jwtAuthEntryPoint);
+
+        http
+                .addFilterBefore(this.jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
 
         http
                 .httpBasic()
@@ -47,13 +51,12 @@ public class SecurityConfiguration {
                 .permitAll()
                 .antMatchers("/user/log_In")
                 .permitAll()
-                .antMatchers("/user/all")
-                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         return http.build();
     }
 

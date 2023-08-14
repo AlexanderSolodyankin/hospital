@@ -3,6 +3,7 @@ package com.example.hospital.service;
 import com.example.hospital.entity.RoleEntity;
 import com.example.hospital.entity.Status;
 import com.example.hospital.entity.UserEntity;
+import com.example.hospital.exceptions.users_related_exception.UserAuthenticationException;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface UserService {
     List<UserEntity> getAllUserByRole(RoleEntity roleEntity);
     UserEntity updateUser(UserEntity userEntity);
     UserEntity updateUser(UserEntity userEntity, UserEntity newUserEntity) throws Exception;
-    void deleteUser(UserEntity userEntity) ;
+    void deleteUser();
     void deleteUserByLogin(String login);
     void deleteUserByEmail(String email);
     void deleteUserById(Long id) throws Exception;

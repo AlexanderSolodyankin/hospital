@@ -4,13 +4,18 @@ import com.example.hospital.entity.RoleEntity;
 import com.example.hospital.entity.Status;
 import com.example.hospital.entity.UserEntity;
 import com.example.hospital.repository.UserRepository;
+import com.example.hospital.service.RoleService;
 import com.example.hospital.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,11 +23,16 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            RoleService roleService
+    ) {
         this.userRepository = userRepository;
+        this.roleService = roleService;
     }
 
     @Override
@@ -32,7 +42,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserEntity register(UserEntity entity) {
-        entity.setActive(Status.NO_ACTIVE);
+        List<RoleEntity> roleList = new ArrayList<>();
+        roleList.add(roleService.getRoleByTitle("USER"));
+        entity
+                .setActive(Status.NO_ACTIVE)
+                .setRoleEntityList(roleList);
         return userRepository.save(entity);
     }
 
@@ -71,6 +85,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findAllByRoleEntityList(roleEntity);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @Override
     public UserEntity updateUser(UserEntity userEntity) {
         return null;
@@ -91,22 +106,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return register(newUserEntity);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @Override
-    public void deleteUser(UserEntity userEntity) {
-        Optional<UserEntity> optionalUserEntity = userRepository.findById(userEntity.getId());
-        if (optionalUserEntity.isEmpty()) {
-            System.out.println("Пользователь не получился");
-        }
-        UserEntity entity = optionalUserEntity.get();
-        if (!entity.getEmail().equals(userEntity.getEmail()) &&
-                !entity.getLogin().equals(userEntity.getLogin()) &&
-                !entity.getPassword().equals(userEntity.getPassword())
-        ) throw new IllegalArgumentException("Удоление не удалось");
-        entity.setActive(Status.DELETED);
-        register(entity);
-
+    public void deleteUser() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserEntity entity = (UserEntity) userDetails;
+        userRepository.save(entity.setActive(Status.DELETED));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @Override
     public void deleteUserByLogin(String login) {
         UserEntity entity = userRepository.findByLogin(login);
@@ -114,6 +122,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         register(entity);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @Override
     public void deleteUserByEmail(String email) {
         UserEntity entity = userRepository.findByEmail(email);
@@ -121,6 +130,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         register(entity);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @Override
     public void deleteUserById(Long id) throws Exception {
         Optional<UserEntity> entity = userRepository.findById(id);

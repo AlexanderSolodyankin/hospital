@@ -16,20 +16,19 @@ import java.io.IOException;
 import java.util.Objects;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final JetHandler jwtHandler;
+    private final JwtHandler jwtHandler;
     private final UserDetailsService userDetailsService;
 
     @Autowired
-    public JwtAuthenticationFilter(
-            JetHandler jwtHandler,
-            UserDetailsService userDetailsService) {
+    public JwtAuthFilter(
+            JwtHandler jwtHandler,
+            UserDetailsService userDetailsService
+    ) {
         this.jwtHandler = jwtHandler;
-
         this.userDetailsService = userDetailsService;
     }
-
 
     @Override
     protected void doFilterInternal(
@@ -39,24 +38,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         String token = this.parseJwt(request);
-
-        if(Objects.nonNull(token) && this.jwtHandler.validationToken(token)){
+        if (Objects.nonNull(token) && this.jwtHandler.validationToken(token)) {
             String userName = this.jwtHandler.getUserNameFromToken(token);
-            UserDetails user =this.userDetailsService.loadUserByUsername(userName);
-
-            UsernamePasswordAuthenticationToken authToken =
-                    UsernamePasswordAuthenticationToken.authenticated(user, null, user.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+            UserDetails user = this.userDetailsService.loadUserByUsername(userName);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                UsernamePasswordAuthenticationToken.authenticated(user,null, user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
-        filterChain.doFilter(request, response);
 
-
+        filterChain.doFilter(request,response);
     }
 
-    private String parseJwt(HttpServletRequest request){
+    private String parseJwt(HttpServletRequest request) {
         final String authHeader = request.getHeader("Authorization");
-        if(Objects.nonNull(authHeader) && authHeader.startsWith("Bearer ")){
+        if (Objects.nonNull(authHeader) && authHeader.startsWith("Bearer ")) {
             return authHeader.substring(7);
         }
         return null;
