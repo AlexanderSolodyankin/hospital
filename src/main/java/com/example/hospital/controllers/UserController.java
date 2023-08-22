@@ -85,10 +85,9 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping(value = "/userDelete")
     public ResponseEntity<String> deleteUser(
-            @RequestParam(name = "consentFromUser") boolean consentFromUser,
             @RequestParam(name = "userPassword") String userPassword
             ){
-        if(consentFromUser && authorizeService.passwordValidats(userPassword)){
+        if(authorizeService.passwordValidats(userPassword)){
             userService.deleteUser();
             return ResponseEntity.ok("Удоление пользователя прошло успешно.");
         }

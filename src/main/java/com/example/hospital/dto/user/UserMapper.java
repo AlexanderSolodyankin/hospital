@@ -1,9 +1,11 @@
 package com.example.hospital.dto.user;
 
 import com.example.hospital.dto.user.request.UserRequestDto;
+import com.example.hospital.dto.user.request.UserRequestTransferDto;
 import com.example.hospital.dto.user.response.UserResponseDto;
 import com.example.hospital.entity.RoleEntity;
 import com.example.hospital.entity.UserEntity;
+import com.example.hospital.exceptions.ThenComeUpWithException;
 import com.example.hospital.service.RoleService;
 import com.example.hospital.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ public class UserMapper {
 
     public UserEntity mapModelToEntity(UserRequestDto requestDto){
         UserEntity entity;
-        entity = mapModelToEntityFromDataBase(requestDto);
+        entity = mapModelToEntityFromDataBase(null, requestDto.getLogin(), requestDto.getEmail());
         if(Objects.isNull(entity)){
             entity = new UserEntity();
             entity.setLogin(requestDto.getLogin())
@@ -38,7 +40,7 @@ public class UserMapper {
     }
 
     public UserEntity mapModelToEntity(UserResponseDto responseDto){
-        UserEntity entity = mapModelToEntityFromDataBase(responseDto);
+        UserEntity entity = mapModelToEntityFromDataBase(responseDto.getId(), responseDto.getLogin(), responseDto.getEmail());
         if(Objects.isNull(entity)){
             entity = new UserEntity();
             List<RoleEntity> roleEntities = new ArrayList<>();
@@ -52,17 +54,19 @@ public class UserMapper {
         }
         return entity;
     }
-
-    private UserEntity mapModelToEntityFromDataBase(UserRequestDto requestDto){
-        UserEntity entity = userService.getUserByLogin(requestDto.getLogin());
-        if(Objects.isNull(entity)) entity = userService.getUserByEmail(requestDto.getEmail());
+    public UserEntity mapModelToEntity(UserRequestTransferDto responseDto){
+        UserEntity entity = mapModelToEntityFromDataBase(responseDto.getId(), responseDto.getLogin(), responseDto.getEmail());
+        if(Objects.isNull(entity)){
+            throw new ThenComeUpWithException("Такого пользователя нет в системе");
+        }
         return entity;
     }
-    private UserEntity mapModelToEntityFromDataBase(UserResponseDto responseDto){
-        UserEntity entity = userService.getUserById(responseDto.getId());
-        if(Objects.isNull(entity)) entity = userService.getUserByLogin(responseDto.getLogin());
-        if(Objects.isNull(entity)) entity = userService.getUserByEmail(responseDto.getEmail());
-        return entity;
+
+    private UserEntity mapModelToEntityFromDataBase(Long id, String login, String email){
+        if(Objects.nonNull(id)) return userService.getUserById(id);
+        if(Objects.nonNull(login)) return userService.getUserByLogin(login);
+        if(Objects.nonNull(email)) return userService.getUserByEmail(email);
+        return null;
     }
 
     public UserResponseDto mapEntityToResponseModelDto(UserEntity entity){
@@ -89,33 +93,17 @@ public class UserMapper {
     }
 
     public List<UserRequestDto> mapEntityListToRequestModelList(List<UserEntity> userEntityList){
-        List<UserRequestDto> requestDtoList = new ArrayList<>();
-        for(UserEntity el : userEntityList){
-            requestDtoList.add(mapEntityToRequestModelDto(el));
-        }
-        return requestDtoList;
+        return userEntityList.stream().map(this::mapEntityToRequestModelDto).collect(Collectors.toList());
     }
     public List<UserResponseDto> mapEntityListToResponseModelList(List<UserEntity> userEntityList){
-        List<UserResponseDto> responseDtoList = new ArrayList<>();
-        for(UserEntity el : userEntityList){
-            responseDtoList.add(mapEntityToResponseModelDto(el));
-        }
-        return responseDtoList;
+        return userEntityList.stream().map(this::mapEntityToResponseModelDto).collect(Collectors.toList());
     }
 
     public List<UserEntity> mapResponseModelListToEntityList(List<UserResponseDto> responseDtoList){
-        List<UserEntity> entityList = new ArrayList<>();
-        for(UserResponseDto el : responseDtoList){
-            entityList.add(mapModelToEntity(el));
-        }
-        return entityList;
+        return responseDtoList.stream().map(this::mapModelToEntity).collect(Collectors.toList());
     }
     public List<UserEntity> mapRequestModelListToEntityList(List<UserRequestDto> requestDtoList){
-        List<UserEntity> entityList = new ArrayList<>();
-        for(UserRequestDto el : requestDtoList){
-            entityList.add(mapModelToEntity(el));
-        }
-        return entityList;
+        return requestDtoList.stream().map(this::mapModelToEntity).collect(Collectors.toList());
     }
 
 

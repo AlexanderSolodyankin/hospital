@@ -1,8 +1,11 @@
 package com.example.hospital.service.impl;
 
+import com.example.hospital.dto.user.RoleMapper;
+import com.example.hospital.dto.user.request.UserRequestUpdateDto;
 import com.example.hospital.entity.RoleEntity;
 import com.example.hospital.entity.Status;
 import com.example.hospital.entity.UserEntity;
+import com.example.hospital.exceptions.ThenComeUpWithException;
 import com.example.hospital.repository.UserRepository;
 import com.example.hospital.service.RoleService;
 import com.example.hospital.service.UserService;
@@ -16,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -24,14 +26,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final RoleMapper roleMapper;
 
     @Autowired
     public UserServiceImpl(
             UserRepository userRepository,
-            RoleService roleService
-    ) {
+            RoleService roleService,
+            RoleMapper roleMapper) {
         this.userRepository = userRepository;
         this.roleService = roleService;
+        this.roleMapper = roleMapper;
     }
 
     @Override
@@ -84,28 +88,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findAllByRoleEntityList(roleEntity);
     }
 
-    @PreAuthorize("hasRole('USER')")
     @Override
     public UserEntity updateUser(UserEntity userEntity) {
         return null;
     }
 
     @Override
-    public UserEntity updateUser(UserEntity userEntity, UserEntity newUserEntity) throws Exception {
-        Optional<UserEntity> entity = userRepository.findById(userEntity.getId());
-        if (entity.isEmpty()) {
-            throw new Exception("Для изменения пользователя нужно выбрать орегинального пользователя");
+    public UserEntity updateUser(UserRequestUpdateDto updateDto)  {
+        Optional<UserEntity> entity = userRepository.findById(updateDto.getId());
+        if (entity.isEmpty() || entity == null) {
+            throw new ThenComeUpWithException("Для изменения пользователя нужно выбрать орегинального пользователя");
         }
         UserEntity originalUser = entity.get();
-        if (!originalUser.getLogin().equals(newUserEntity.getLogin()) &&
-                !originalUser.getId().equals(newUserEntity.getId()) &&
-                !originalUser.getEmail().equals(newUserEntity.getEmail()) &&
-                !originalUser.getDateCreate().equals(newUserEntity.getDateCreate())
-        ) throw new Exception("Вы не можите менять у пользователя только пароль, статус или роль");
-        return register(newUserEntity);
+        originalUser.setActive(updateDto.getStatus())
+                .setEmail(updateDto.getEmail())
+                .setPassword(updateDto.getPassword())
+                .setRoleEntityList(roleMapper.mapModelListToEntityList(updateDto.getRoleLists()));
+
+        return userRepository.save(originalUser);
     }
 
-    @PreAuthorize("hasRole('USER')")
+
     @Override
     public void deleteUser() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -113,7 +116,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userRepository.save(entity.setActive(Status.DELETED));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+
     @Override
     public void deleteUserByLogin(String login) {
         UserEntity entity = userRepository.findByLogin(login);
@@ -121,7 +124,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         register(entity);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+
     @Override
     public void deleteUserByEmail(String email) {
         UserEntity entity = userRepository.findByEmail(email);
@@ -129,7 +132,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         register(entity);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+
     @Override
     public void deleteUserById(Long id) throws Exception {
         Optional<UserEntity> entity = userRepository.findById(id);

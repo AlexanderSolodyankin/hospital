@@ -1,5 +1,6 @@
 package com.example.hospital.service;
 
+import com.example.hospital.dto.user.request.UserRequestUpdateDto;
 import com.example.hospital.entity.RoleEntity;
 import com.example.hospital.entity.Status;
 import com.example.hospital.entity.UserEntity;
@@ -18,7 +19,7 @@ public interface UserService {
     UserEntity getUserByActivitiesCode(String activitiesCode);
     List<UserEntity> getAllUserByRole(RoleEntity roleEntity);
     UserEntity updateUser(UserEntity userEntity);
-    UserEntity updateUser(UserEntity userEntity, UserEntity newUserEntity) throws Exception;
+    UserEntity updateUser(UserRequestUpdateDto updateDto) ;
     void deleteUser();
     void deleteUserByLogin(String login);
     void deleteUserByEmail(String email);
