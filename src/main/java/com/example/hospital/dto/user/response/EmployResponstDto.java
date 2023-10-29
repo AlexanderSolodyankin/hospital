@@ -1,4 +1,0 @@
-package com.example.hospital.dto.user.response;
-
-public class EmployResponstDto {
-}
