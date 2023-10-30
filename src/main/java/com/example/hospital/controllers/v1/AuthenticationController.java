@@ -28,17 +28,17 @@ public class AuthenticationController {
 
     @Operation(
             summary = "Регистрация нового пользователя.",
-            description = "Регистрирует пользователя в системе. " +
+            description = "Регистрирует пользователя в системе. <br/>" +
                     "В теле запроса принимает данные в формате JSON касса UserRequestDTO. ",
             responses = {
                     @ApiResponse(
-                            responseCode = "200 OK ",
-                            description = " Возвращает информацию о зарегистрированном пользователе в JSON формате. ",
+                            responseCode = "OK ",
+                            description = "Возвращает информацию о зарегистрированном пользователе в JSON формате. ",
                             content = @Content(schema = @Schema(implementation = UserResponseDto.class))
                     ),
                     @ApiResponse(
-                            responseCode = "400 BAD_REQUEST. \n ",
-                            description = " Возвращает информацию об ошибке в JSON формате. ",
+                            responseCode = "FAILED",
+                            description = "Возвращает информацию об ошибке в JSON формате. ",
                             content = @Content(schema = @Schema(implementation = ResponseModel.class))
                     )
             }
@@ -66,6 +66,26 @@ public class AuthenticationController {
     }
 
 
+    @Operation(
+            summary = "Авторизация пользователя.",
+            description = "Инициирует вход пользователя в систему. <br/>" +
+                    "В теле запроса принимает данные в виде отдельных параметров. <br/>" +
+                    "Ограничения: <br/>" +
+                    "Логин или почта не должны быть пустыми. <br/>" +
+                    "Пароль не должен быть пустым.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "OK ",
+                            description = " Возвращает токен зарегистрированного пользователя в JSON формате. ",
+                            content = @Content(schema = @Schema(implementation = JwtResponseDto.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "FAILED",
+                            description = "Возвращает информацию об ошибке в JSON формате. ",
+                            content = @Content(schema = @Schema(implementation = ResponseModel.class))
+                    )
+            }
+    )
     @PostMapping("/login")
     public ResponseEntity<JwtResponseDto> login(
             @RequestParam(required = false) String login,
@@ -77,10 +97,12 @@ public class AuthenticationController {
 
         if (Objects.isNull(password) || password.isEmpty())
             throw new UserAuthPasswordIncorrectException("Пароль пользователя не должен быть пустым");
+
         if (Objects.isNull(email) && Objects.isNull(login))
             throw new UserAuthenticationLoginParameterIsNullException(
                     "Не были переданы Логин или почта при помощи которой можно проверить пользователя системы"
             );
+
         if (email.isEmpty() && login.isEmpty())
             throw new UserAuthenticationParameterIsEmptyException("Логин и пароль пусты");
 
