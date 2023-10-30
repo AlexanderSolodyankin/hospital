@@ -47,11 +47,11 @@ public class AuthenticationController {
     public ResponseEntity<UserResponseDto> registerNewUser(
             @RequestBody UserRequestDto userRequestDto
     ) throws UserRegistrationNullPointException, UserRegisterParameterException {
-
+        /* =======================  переместить в сервисный класс =========================================*/
 
         if (Objects.isNull(userRequestDto))
             throw new UserRegistrationNullPointException("Данные пользователя не могут быть пустыми");
-        /* =======================  переместить в сервисный класс =========================================*/
+
         if (Objects.isNull(userRequestDto.getLogin()) && userRequestDto.getLogin().isEmpty())
             throw new UserRegisterParameterException("Логин пользователя не может быть пустым" );
         /*============================================================================================================*/
