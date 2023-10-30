@@ -1,8 +1,8 @@
 package com.example.hospital.controllers.v1;
 
+import com.example.hospital.dto.response.JwtResponseDto;
 import com.example.hospital.exception.ResponseModel;
-import com.example.hospital.exception.exceptions.UserRegisterParameterException;
-import com.example.hospital.exception.exceptions.UserRegistrationNullPointException;
+import com.example.hospital.exception.exceptions.*;
 import com.example.hospital.dto.request.UserResponseDto;
 import com.example.hospital.dto.response.UserRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,15 +53,42 @@ public class AuthenticationController {
             throw new UserRegistrationNullPointException("Данные пользователя не могут быть пустыми");
 
         if (Objects.isNull(userRequestDto.getLogin()) && userRequestDto.getLogin().isEmpty())
-            throw new UserRegisterParameterException("Логин пользователя не может быть пустым" );
+            throw new UserRegisterParameterException("Логин пользователя не может быть пустым");
         /*============================================================================================================*/
 
         return ResponseEntity.ok(
                 new UserResponseDto()
-                        .setId( new Random().nextInt(101) + 1l)
+                        .setId(new Random().nextInt(101) + 1l)
                         .setLogin(userRequestDto.getLogin())
                         .setEmail(userRequestDto.getEmail())
                         .setDateCreate(LocalDateTime.now())
         );
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponseDto> login(
+            @RequestParam(required = false) String login,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String password
+    )
+            throws UserAuthPasswordIncorrectException,
+            UserAuthenticationLoginParameterIsNullException, UserAuthenticationParameterIsEmptyException {
+
+        if (Objects.isNull(password) || password.isEmpty())
+            throw new UserAuthPasswordIncorrectException("Пароль пользователя не должен быть пустым");
+        if (Objects.isNull(email) && Objects.isNull(login))
+            throw new UserAuthenticationLoginParameterIsNullException(
+                    "Не были переданы Логин или почта при помощи которой можно проверить пользователя системы"
+            );
+        if (email.isEmpty() && login.isEmpty())
+            throw new UserAuthenticationParameterIsEmptyException("Логин и пароль пусты");
+
+        return ResponseEntity.ok(
+                new JwtResponseDto()
+                        .setJwtValue("Тут должен быть токен пользователя" +
+                                " но на данный момент контроллер на стадии разработки")
+        );
+
     }
 }
