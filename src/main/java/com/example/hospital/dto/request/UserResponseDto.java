@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Schema(description = "Dto Модель для передачи данных клиенту в теле запроса")
 public class UserResponseDto {
     @Schema(description = "ID  пользователя ",
-            example = "1453",
+            example = "1",
             required = true,
             maximum = "1")
     private Long id;
@@ -66,4 +66,5 @@ public class UserResponseDto {
         this.dateCreate = dateCreate;
         return this;
     }
+
 }

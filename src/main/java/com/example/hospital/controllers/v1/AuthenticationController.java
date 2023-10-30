@@ -44,7 +44,7 @@ public class AuthenticationController {
             }
     )
     @PostMapping(value = "/register")
-    public ResponseEntity<String> registerNewUser(
+    public ResponseEntity<UserResponseDto> registerNewUser(
             @RequestBody UserRequestDto userRequestDto
     ) throws UserRegistrationNullPointException, UserRegisterParameterException {
 
@@ -56,7 +56,7 @@ public class AuthenticationController {
             throw new UserRegisterParameterException("Логин пользователя не может быть пустым" );
         /*============================================================================================================*/
 
-        return ResponseEntity.ok("На сервер пришли данные нового пользователя: \n" +
+        return ResponseEntity.ok(
                 new UserResponseDto()
                         .setId( new Random().nextInt(101) + 1l)
                         .setLogin(userRequestDto.getLogin())
