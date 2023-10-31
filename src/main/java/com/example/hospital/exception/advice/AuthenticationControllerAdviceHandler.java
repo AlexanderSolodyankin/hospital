@@ -66,6 +66,20 @@ public class AuthenticationControllerAdviceHandler {
                                 "Попробуйте ввести пароль еще раз и повторить запрос.")
         );
     }
+    @ExceptionHandler(value = UserNotFoundFromSystemException.class)
+    public ResponseEntity<ResponseModel>
+    adviceHandelUserNotFoundFromSystem(UserNotFoundFromSystemException ex) {
+        return ResponseEntity.badRequest().body(
+                new ResponseModel(
+                        ex,
+                        HttpStatus.BAD_REQUEST,
+                        "Вы пытаетесь зайти в систему и по вашему логину или паролю не найдены записи." +
+                                " Такого пользователя нет в системе. " +
+                                "Убедитесь что введенный вами логин или почтовый ящик введены корректно," +
+                                " или ранее вы не регистрировались в данной системе " +
+                                "и что бы войти вам нужно зарегистрироваться.")
+        );
+    }
 
 
 }

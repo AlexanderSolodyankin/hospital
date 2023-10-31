@@ -5,11 +5,13 @@ import com.example.hospital.exception.ResponseModel;
 import com.example.hospital.exception.exceptions.*;
 import com.example.hospital.dto.request.UserResponseDto;
 import com.example.hospital.dto.response.UserRequestDto;
+import com.example.hospital.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,13 @@ import java.util.Random;
         description = "Контроллеры для регистрации и авторизации пользователя"
 )
 public class AuthenticationController {
+
+    private UserService userService;
+
+    @Autowired
+    public AuthenticationController(UserService userService) {
+        this.userService = userService;
+    }
 
 
     @Operation(
