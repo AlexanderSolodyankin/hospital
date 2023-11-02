@@ -1,6 +1,5 @@
 package com.example.hospital.exception;
 
-import com.example.hospital.exception.exceptions.UserRegistrationNullPointException;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 
@@ -23,11 +22,14 @@ public class ResponseModel {
     )
     private String advice;
 
-    public ResponseModel(Exception exception, HttpStatus status, String advice) {
+    public ResponseModel(ExceptionModel exception) {
         this.exception = exception.getClass().getSimpleName();
         this.message = exception.getMessage();
-        this.status = status;
-        this.advice = advice;
+        this.status = exception.getStatus();
+        this.advice = exception.getAdvice();
+    }
+
+    public ResponseModel() {
     }
 
     public String getException() {

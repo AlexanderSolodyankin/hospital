@@ -11,12 +11,15 @@ import java.time.LocalDateTime;
 public class UserEntity  extends BaseEntity{
     @Column(name = "login", unique = true, nullable = false)
     private String login;
-    @Column(name = "password", nullable = false)
+    @Column(name = "user_password", nullable = false)
     private String password;
     @Column(name = "email", unique = true, nullable = false)
     private String email;
     @Column(name = "date_create")
     private LocalDateTime dataCreate;
+
+    @Column(name = "active")
+    private boolean active;
 
     public UserEntity() {
     }
@@ -55,6 +58,20 @@ public class UserEntity  extends BaseEntity{
     public UserEntity setDataCreate(LocalDateTime dataCreate) {
         this.dataCreate = dataCreate;
         return this;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public UserEntity setActive(boolean active) {
+        this.active = active;
+        return this;
+    }
+
+    @PrePersist
+    public void setCreateData(){
+        this.dataCreate = LocalDateTime.now();
     }
 
 }

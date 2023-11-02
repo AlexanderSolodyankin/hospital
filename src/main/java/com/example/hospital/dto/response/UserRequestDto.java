@@ -60,4 +60,13 @@ public class UserRequestDto {
         this.password = password;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "UserRequestDto{" +
+                "login='" + login + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }
