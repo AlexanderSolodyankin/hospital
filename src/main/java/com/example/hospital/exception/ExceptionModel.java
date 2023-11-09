@@ -1,8 +1,10 @@
 package com.example.hospital.exception;
 
 import org.springframework.http.HttpStatus;
-
-public abstract class ExceptionModel extends Exception implements PrintableMessageException{
+/**
+ * Базовая модель исключений нужна как ДТО для передачи фронтенд разработчику
+ * */
+public abstract class ExceptionModel extends Exception {
 
     protected HttpStatus status;
     protected String advice;
@@ -17,12 +19,11 @@ public abstract class ExceptionModel extends Exception implements PrintableMessa
         this.advice = advice;
     }
 
-    @Override
+
     public String getExceptionName() {
         return getExceptionSimpleName();
     }
 
-    @Override
     public HttpStatus getHttpStatus() {
         return getHttpStatus();
     }
@@ -39,8 +40,6 @@ public abstract class ExceptionModel extends Exception implements PrintableMessa
         this.status = status;
         return this;
     }
-
-    @Override
     public String getAdvice() {
         return advice;
     }

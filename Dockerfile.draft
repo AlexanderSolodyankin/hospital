@@ -1,0 +1,4 @@
+FROM adoptopenjdk/openjd11:jdk-11.0.5_10-alpane
+ARG JAR_FILE=target/hospital-0.1.jar
+COPY ${JAR_FILE} hspital-0.1.jar
+ENTRYPOINT ["java","-jar","hospital-0.1.jar"]

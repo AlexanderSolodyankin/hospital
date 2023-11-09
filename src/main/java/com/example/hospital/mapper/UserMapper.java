@@ -1,7 +1,7 @@
 package com.example.hospital.mapper;
 
-import com.example.hospital.dto.request.UserResponseDto;
-import com.example.hospital.dto.response.UserRequestDto;
+import com.example.hospital.dto.request.UserRequestDto;
+import com.example.hospital.dto.response.UserResponseDto;
 import com.example.hospital.entity.UserEntity;
 
 import java.util.List;

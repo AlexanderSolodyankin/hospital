@@ -1,8 +1,8 @@
-package com.example.hospital.dto.response;
+package com.example.hospital.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "DTO модель передачи данных о пользователе на сервер в тее запроса.")
+@Schema(description = "DTO модель передачи данных о пользователе на сервер в теле запроса.")
 public class UserRequestDto {
     @Schema(
             description = "Логин пользователя. \n" +
@@ -17,8 +17,7 @@ public class UserRequestDto {
             description = "Почтовый адрес пользователя. \n" +
                     "Ограничения: \n" +
                     "Не должен быть пустым или null",
-            example = "vitalistepanov1997@mail.ru",
-            required = true
+            example = "vitalistepanov1997@mail.ru"
     )
     private String email;
     @Schema(
@@ -63,7 +62,7 @@ public class UserRequestDto {
 
     @Override
     public String toString() {
-        return "UserRequestDto{" +
+        return "UserResponseDto{" +
                 "login='" + login + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +

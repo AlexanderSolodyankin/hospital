@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 
 @Schema(description = "Модель передачи данных об ошибке клиентскому приложению в теле запроса.")
-public class ResponseModel {
+public class ResponseExceptionModel {
     @Schema(description = "Исключение вызванное в результате работы программы.",
     example =  "UserRegistrationNullPointException"
     )
@@ -22,21 +22,21 @@ public class ResponseModel {
     )
     private String advice;
 
-    public ResponseModel(ExceptionModel exception) {
+    public ResponseExceptionModel(ExceptionModel exception) {
         this.exception = exception.getClass().getSimpleName();
         this.message = exception.getMessage();
         this.status = exception.getStatus();
         this.advice = exception.getAdvice();
     }
 
-    public ResponseModel() {
+    public ResponseExceptionModel() {
     }
 
     public String getException() {
         return exception;
     }
 
-    public ResponseModel setException(String exception) {
+    public ResponseExceptionModel setException(String exception) {
         this.exception = exception;
         return this;
     }
@@ -45,7 +45,7 @@ public class ResponseModel {
         return status;
     }
 
-    public ResponseModel setStatus(HttpStatus status) {
+    public ResponseExceptionModel setStatus(HttpStatus status) {
         this.status = status;
         return this;
     }
@@ -54,7 +54,7 @@ public class ResponseModel {
         return message;
     }
 
-    public ResponseModel setMessage(String message) {
+    public ResponseExceptionModel setMessage(String message) {
         this.message = message;
         return this;
     }
@@ -63,7 +63,7 @@ public class ResponseModel {
         return advice;
     }
 
-    public ResponseModel setAdvice(String advice) {
+    public ResponseExceptionModel setAdvice(String advice) {
         this.advice = advice;
         return this;
     }

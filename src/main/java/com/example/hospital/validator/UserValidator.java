@@ -1,6 +1,6 @@
 package com.example.hospital.validator;
 
-import com.example.hospital.dto.response.UserRequestDto;
+import com.example.hospital.dto.request.UserRequestDto;
 import com.example.hospital.exception.exceptions.IllLegalUserArgumentException;
 import com.example.hospital.exception.exceptions.InvalidUserCredentialsException;
 import org.springframework.http.HttpStatus;
